@@ -685,6 +685,16 @@ class PreferenceManager2 private constructor(private val context: Context) :
         defaultValue = false,
     )
 
+    val verticalSwipeThreshold = preference(
+        key = intPreferencesKey(name = "vertical_swipe_threshold"),
+        defaultValue = 100,
+    )
+
+    val horizontalSwipeThreshold = preference(
+        key = intPreferencesKey(name = "horizontal_swipe_threshold"),
+        defaultValue = 100,
+    )
+
     val doubleTapGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("double_tap_gesture_handler"),
         defaultValue = GestureHandlerConfig.Sleep,

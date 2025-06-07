@@ -7,6 +7,8 @@ import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.type.GestureType
 import app.lawnchair.launcher
 import app.lawnchair.preferences2.PreferenceManager2
+import com.patrykmichalik.opto.core.firstBlocking
+import app.lawnchair.preferences2.subscribeBlocking
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.util.VibratorWrapper
 import kotlinx.coroutines.flow.firstOrNull
@@ -16,7 +18,20 @@ class IconGestureListener(
     private val context: Context,
     private val prefs: PreferenceManager2,
     private val cmp: ItemInfo?,
-) : DirectionalGestureListener(context) {
+) : DirectionalGestureListener(
+    context,
+    prefs.verticalSwipeThreshold.firstBlocking(),
+    prefs.horizontalSwipeThreshold.firstBlocking(),
+) {
+
+    init {
+        prefs.verticalSwipeThreshold.subscribeBlocking(context.launcher.lifecycleScope) {
+            verticalSwipeThreshold = it
+        }
+        prefs.horizontalSwipeThreshold.subscribeBlocking(context.launcher.lifecycleScope) {
+            horizontalSwipeThreshold = it
+        }
+    }
 
     override fun onSwipeRight() = handleGesture(GestureType.SWIPE_RIGHT)
     override fun onSwipeLeft() = handleGesture(GestureType.SWIPE_LEFT)
