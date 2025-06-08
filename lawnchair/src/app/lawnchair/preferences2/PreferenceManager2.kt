@@ -685,6 +685,24 @@ class PreferenceManager2 private constructor(private val context: Context) :
         defaultValue = false,
     )
 
+    /** Minimum distance in pixels before a vertical swipe on the home screen is detected */
+    val verticalSwipeThreshold = preference(
+        key = intPreferencesKey(name = "vertical_swipe_threshold"),
+        defaultValue = 100,
+    )
+
+    /** Minimum distance in pixels before a horizontal swipe on the home screen is detected */
+    val horizontalSwipeThreshold = preference(
+        key = intPreferencesKey(name = "horizontal_swipe_threshold"),
+        defaultValue = 100,
+    )
+
+    /** Minimum velocity in px/ms before a home screen swipe is triggered */
+    val swipeVelocityThreshold = preference(
+        key = floatPreferencesKey(name = "swipe_velocity_threshold"),
+        defaultValue = 2.25f,
+    )
+
     val doubleTapGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("double_tap_gesture_handler"),
         defaultValue = GestureHandlerConfig.Sleep,

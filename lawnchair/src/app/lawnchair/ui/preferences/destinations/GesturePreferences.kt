@@ -7,6 +7,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.GestureHandlerPreference
+import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import com.android.launcher3.R
@@ -41,6 +42,24 @@ fun GesturePreferences(
             GestureHandlerPreference(
                 adapter = prefs.backPressGestureHandler.getAdapter(),
                 label = stringResource(id = R.string.gesture_back_tap),
+            )
+            SliderPreference(
+                label = stringResource(id = R.string.vertical_swipe_threshold_label),
+                adapter = prefs.verticalSwipeThreshold.getAdapter(),
+                step = 10,
+                valueRange = 50..300,
+            )
+            SliderPreference(
+                label = stringResource(id = R.string.horizontal_swipe_threshold_label),
+                adapter = prefs.horizontalSwipeThreshold.getAdapter(),
+                step = 10,
+                valueRange = 50..300,
+            )
+            SliderPreference(
+                label = stringResource(id = R.string.swipe_velocity_threshold_label),
+                adapter = prefs.swipeVelocityThreshold.getAdapter(),
+                step = 0.25f,
+                valueRange = 0.5f..5f,
             )
         }
     }

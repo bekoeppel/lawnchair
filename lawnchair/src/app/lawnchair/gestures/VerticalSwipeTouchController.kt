@@ -5,6 +5,8 @@ import android.view.MotionEvent
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.subscribeBlocking
+import com.patrykmichalik.opto.core.firstBlocking
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.LauncherState
 import com.android.launcher3.Utilities
@@ -23,6 +25,9 @@ class VerticalSwipeTouchController(
 
     private val prefs = PreferenceManager2.getInstance(launcher)
     private val detector = BothAxesSwipeDetector(launcher, this)
+    private var verticalSwipeThreshold = prefs.verticalSwipeThreshold.firstBlocking()
+    private var horizontalSwipeThreshold = prefs.horizontalSwipeThreshold.firstBlocking()
+    private var swipeVelocityThreshold = prefs.swipeVelocityThreshold.firstBlocking()
 
     private var overrideSwipeUp = false
     private var overrideSwipeDown = false
@@ -42,6 +47,15 @@ class VerticalSwipeTouchController(
             prefs.swipeDownGestureHandler.get()
                 .onEach { overrideSwipeDown = it != prefs.swipeDownGestureHandler.defaultValue }
                 .launchIn(this)
+        }
+        prefs.verticalSwipeThreshold.subscribeBlocking(launcher.lifecycleScope) {
+            verticalSwipeThreshold = it
+        }
+        prefs.horizontalSwipeThreshold.subscribeBlocking(launcher.lifecycleScope) {
+            horizontalSwipeThreshold = it
+        }
+        prefs.swipeVelocityThreshold.subscribeBlocking(launcher.lifecycleScope) {
+            swipeVelocityThreshold = it
         }
     }
 
@@ -74,12 +88,20 @@ class VerticalSwipeTouchController(
 
     override fun onDragStart(start: Boolean) {
         triggered = false
+        currentDisplacement = 0f
+        currentVelocity = 0f
+        currentMillis = 0L
     }
 
     override fun onDrag(displacement: PointF, motionEvent: MotionEvent): Boolean {
         if (triggered) return true
-        val velocity = computeVelocity(displacement.y - currentDisplacement, motionEvent.eventTime)
-        if (velocity.absoluteValue > TRIGGER_VELOCITY) {
+        val delta = displacement.y - currentDisplacement
+        val velocity = computeVelocity(delta, motionEvent.eventTime)
+        currentDisplacement = displacement.y
+        if (
+            velocity.absoluteValue > swipeVelocityThreshold &&
+            displacement.y.absoluteValue > verticalSwipeThreshold
+        ) {
             triggered = true
             if (velocity < 0) {
                 gestureController.onSwipeUp()
@@ -129,6 +151,5 @@ class VerticalSwipeTouchController(
 
     companion object {
         private const val SCROLL_VELOCITY_DAMPENING_RC = 1000f / (2f * Math.PI.toFloat() * 10f)
-        private const val TRIGGER_VELOCITY = 2.25f
     }
 }
