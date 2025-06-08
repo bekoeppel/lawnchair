@@ -10,11 +10,7 @@ import android.view.View
 import android.view.View.OnTouchListener
 import kotlin.math.abs
 
-abstract class DirectionalGestureListener(
-    ctx: Context?,
-    var verticalSwipeThreshold: Int = DEFAULT_SWIPE_THRESHOLD,
-    var horizontalSwipeThreshold: Int = DEFAULT_SWIPE_THRESHOLD,
-) : OnTouchListener {
+abstract class DirectionalGestureListener(ctx: Context?) : OnTouchListener {
     private val mGestureDetector = GestureDetector(ctx, GestureListener())
 
     @SuppressLint("ClickableViewAccessibility")
@@ -24,8 +20,7 @@ abstract class DirectionalGestureListener(
 
     inner class GestureListener : SimpleOnGestureListener() {
 
-        private fun shouldReactToSwipe(diff: Float, velocity: Float, threshold: Int): Boolean =
-            abs(diff) > threshold && abs(velocity) > SWIPE_VELOCITY_THRESHOLD
+        private fun shouldReactToSwipe(diff: Float, velocity: Float): Boolean = abs(diff) > SWIPE_THRESHOLD && abs(velocity) > SWIPE_VELOCITY_THRESHOLD
 
         override fun onDown(e: MotionEvent): Boolean {
             return true
@@ -40,11 +35,11 @@ abstract class DirectionalGestureListener(
             val diffY = e2.y - (e1?.y ?: 0f)
             val diffX = e2.x - (e1?.x ?: 0f)
 
-            Log.d("GESTURE_DETECTION", "onFling: y " + shouldReactToSwipe(diffY, velocityY, verticalSwipeThreshold))
-            Log.d("GESTURE_DETECTION", "onFling: X " + shouldReactToSwipe(diffX, velocityX, horizontalSwipeThreshold))
+            Log.d("GESTURE_DETECTION", "onFling: y " + shouldReactToSwipe(diffY, velocityY))
+            Log.d("GESTURE_DETECTION", "onFling: X " + shouldReactToSwipe(diffX, velocityX))
 
             return when {
-                shouldReactToSwipe(diffY, velocityY, verticalSwipeThreshold) -> {
+                shouldReactToSwipe(diffY, velocityY) -> {
                     if (diffY < 0) {
                         Log.d("GESTURE_DETECTION", "Swipe Up Detected")
                         onSwipeTop()
@@ -54,7 +49,7 @@ abstract class DirectionalGestureListener(
                     }
                     true
                 }
-                shouldReactToSwipe(diffX, velocityX, horizontalSwipeThreshold) -> {
+                shouldReactToSwipe(diffX, velocityX) -> {
                     if (diffX > 0) {
                         Log.d("GESTURE_DETECTION", "Swipe Right Detected")
                         onSwipeRight()
@@ -75,7 +70,7 @@ abstract class DirectionalGestureListener(
     abstract fun onSwipeDown()
 
     companion object {
-        private const val DEFAULT_SWIPE_THRESHOLD = 100
+        private const val SWIPE_THRESHOLD = 100
         private const val SWIPE_VELOCITY_THRESHOLD = 100
     }
 }

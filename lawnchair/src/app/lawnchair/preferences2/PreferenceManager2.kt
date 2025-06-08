@@ -685,13 +685,13 @@ class PreferenceManager2 private constructor(private val context: Context) :
         defaultValue = false,
     )
 
-    /** Minimum distance in pixels before a vertical swipe on the home screen or icons is detected */
+    /** Minimum distance in pixels before a vertical swipe on the home screen is detected */
     val verticalSwipeThreshold = preference(
         key = intPreferencesKey(name = "vertical_swipe_threshold"),
         defaultValue = 100,
     )
 
-    /** Minimum distance in pixels before a horizontal swipe on the home screen or icons is detected */
+    /** Minimum distance in pixels before a horizontal swipe on the home screen is detected */
     val horizontalSwipeThreshold = preference(
         key = intPreferencesKey(name = "horizontal_swipe_threshold"),
         defaultValue = 100,
