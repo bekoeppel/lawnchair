@@ -12,7 +12,7 @@ import com.android.launcher3.Utilities
 @RunWith(LauncherMultivalentJUnit::class)
 class VerticalSwipeTouchControllerTest {
 
-    private class TestDetector(private val threshold: Int) {
+    private class TestDetector(private val threshold: Int, private val velocityThreshold: Float) {
         private var currentMillis = 0L
         private var currentVelocity = 0f
         private var currentDisplacement = 0f
@@ -25,7 +25,7 @@ class VerticalSwipeTouchControllerTest {
             val velocity = computeVelocity(delta, time)
             if (!triggered &&
                 displacement.absoluteValue > threshold &&
-                velocity.absoluteValue > TRIGGER_VELOCITY
+                velocity.absoluteValue > velocityThreshold
             ) {
                 triggered = true
             }
@@ -48,15 +48,25 @@ class VerticalSwipeTouchControllerTest {
 
     @Test
     fun gestureTriggersAfterThresholdExceeded() {
-        val detector = TestDetector(150)
+        val detector = TestDetector(150, DEFAULT_VELOCITY_THRESHOLD)
         detector.onDrag(-50f, 16)
         assertTrue(!detector.triggered)
         detector.onDrag(-160f, 32)
         assertTrue(detector.triggered)
     }
 
+    @Test
+    fun gestureDoesNotTriggerWhenVelocityBelowThreshold() {
+        val detector = TestDetector(100, 3f)
+        detector.onDrag(-60f, 50) // velocity < 3
+        detector.onDrag(-160f, 100) // still below velocity threshold
+        assertTrue(!detector.triggered)
+        detector.onDrag(-400f, 116) // high velocity now
+        assertTrue(detector.triggered)
+    }
+
     companion object {
         private const val SCROLL_VELOCITY_DAMPENING_RC = 1000f / (2f * Math.PI.toFloat() * 10f)
-        private const val TRIGGER_VELOCITY = 2.25f
+        private const val DEFAULT_VELOCITY_THRESHOLD = 2.25f
     }
 }

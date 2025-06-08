@@ -55,6 +55,12 @@ fun GesturePreferences(
                 step = 10,
                 valueRange = 50..300,
             )
+            SliderPreference(
+                label = stringResource(id = R.string.swipe_velocity_threshold_label),
+                adapter = prefs.swipeVelocityThreshold.getAdapter(),
+                step = 0.25f,
+                valueRange = 0.5f..5f,
+            )
         }
     }
 }

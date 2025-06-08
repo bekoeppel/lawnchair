@@ -27,6 +27,7 @@ class VerticalSwipeTouchController(
     private val detector = BothAxesSwipeDetector(launcher, this)
     private var verticalSwipeThreshold = prefs.verticalSwipeThreshold.firstBlocking()
     private var horizontalSwipeThreshold = prefs.horizontalSwipeThreshold.firstBlocking()
+    private var swipeVelocityThreshold = prefs.swipeVelocityThreshold.firstBlocking()
 
     private var overrideSwipeUp = false
     private var overrideSwipeDown = false
@@ -52,6 +53,9 @@ class VerticalSwipeTouchController(
         }
         prefs.horizontalSwipeThreshold.subscribeBlocking(launcher.lifecycleScope) {
             horizontalSwipeThreshold = it
+        }
+        prefs.swipeVelocityThreshold.subscribeBlocking(launcher.lifecycleScope) {
+            swipeVelocityThreshold = it
         }
     }
 
@@ -95,7 +99,7 @@ class VerticalSwipeTouchController(
         val velocity = computeVelocity(delta, motionEvent.eventTime)
         currentDisplacement = displacement.y
         if (
-            velocity.absoluteValue > TRIGGER_VELOCITY &&
+            velocity.absoluteValue > swipeVelocityThreshold &&
             displacement.y.absoluteValue > verticalSwipeThreshold
         ) {
             triggered = true
@@ -147,6 +151,5 @@ class VerticalSwipeTouchController(
 
     companion object {
         private const val SCROLL_VELOCITY_DAMPENING_RC = 1000f / (2f * Math.PI.toFloat() * 10f)
-        private const val TRIGGER_VELOCITY = 2.25f
     }
 }
