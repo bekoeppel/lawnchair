@@ -619,7 +619,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * Initializes various states for this workspace.
      */
     protected void initWorkspace() {
-        mCurrentPage = DEFAULT_PAGE;
+        mCurrentPage = getDefaultPageIndex();
         setClipToPadding(false);
 
         setupLayoutTransition();
@@ -3640,12 +3640,16 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return mOverlayShown;
     }
 
+    public int getDefaultPageIndex() {
+        return PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getDefaultHomePage());
+    }
+
     /**
-     * Calls {@link #snapToPage(int)} on the {@link #DEFAULT_PAGE}, then requests
+     * Calls {@link #snapToPage(int)} on the default home page, then requests
      * focus on it.
      */
     public void moveToDefaultScreen() {
-        int page = DEFAULT_PAGE;
+        int page = getDefaultPageIndex();
         if (!workspaceInModalState() && getNextPage() != page) {
             snapToPage(page);
         }
