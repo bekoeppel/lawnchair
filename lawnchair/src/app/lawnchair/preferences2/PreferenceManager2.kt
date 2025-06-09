@@ -606,6 +606,21 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = GestureHandlerConfig.NoOp,
     )
 
+    val homeSwipeVerticalMinDistance = preference(
+        key = intPreferencesKey("home_swipe_vertical_min_distance"),
+        defaultValue = 30,
+    )
+
+    val homeSwipeHorizontalMinDistance = preference(
+        key = intPreferencesKey("home_swipe_horizontal_min_distance"),
+        defaultValue = 30,
+    )
+
+    val homeSwipeTriggerVelocity = preference(
+        key = floatPreferencesKey("home_swipe_trigger_velocity"),
+        defaultValue = 2.25f,
+    )
+
     private inline fun <reified T> serializablePreference(
         key: Preferences.Key<String>,
         defaultValue: T,

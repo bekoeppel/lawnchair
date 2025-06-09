@@ -445,6 +445,10 @@
 
     <string name="pick_app_for_gesture">Pick app</string>
 
+    <string name="pref_home_swipe_vertical_distance">Vertical swipe threshold</string>
+    <string name="pref_home_swipe_horizontal_distance">Horizontal swipe threshold</string>
+    <string name="pref_home_swipe_velocity">Swipe velocity threshold</string>
+
     <string name="dt2s_admin_hint_title">Admin permissions required</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
     <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
