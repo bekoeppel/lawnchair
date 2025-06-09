@@ -31,6 +31,12 @@ class VerticalSwipeTouchController(
     private var currentVelocity = 0f
     private var currentDisplacement = 0f
 
+    private var minVerticalDistance =
+        prefs.homeSwipeVerticalMinDistance.defaultValue.toFloat()
+    private var minHorizontalDistance =
+        prefs.homeSwipeHorizontalMinDistance.defaultValue.toFloat()
+    private var minVelocity = prefs.homeSwipeTriggerVelocity.defaultValue
+
     private var triggered = false
 
     init {
@@ -40,6 +46,15 @@ class VerticalSwipeTouchController(
                 .launchIn(this)
             prefs.swipeDownGestureHandler.get()
                 .onEach { overrideSwipeDown = it != prefs.swipeDownGestureHandler.defaultValue }
+                .launchIn(this)
+            prefs.homeSwipeVerticalMinDistance.get()
+                .onEach { minVerticalDistance = it.toFloat() }
+                .launchIn(this)
+            prefs.homeSwipeHorizontalMinDistance.get()
+                .onEach { minHorizontalDistance = it.toFloat() }
+                .launchIn(this)
+            prefs.homeSwipeTriggerVelocity.get()
+                .onEach { minVelocity = it }
                 .launchIn(this)
         }
     }
@@ -73,12 +88,18 @@ class VerticalSwipeTouchController(
 
     override fun onDragStart(start: Boolean) {
         triggered = false
+        currentDisplacement = 0f
+        currentVelocity = 0f
+        currentMillis = 0L
     }
 
     override fun onDrag(displacement: PointF, motionEvent: MotionEvent): Boolean {
         if (triggered) return true
-        val velocity = computeVelocity(displacement.y - currentDisplacement, motionEvent.eventTime)
-        if (velocity.absoluteValue > TRIGGER_VELOCITY) {
+        val deltaY = displacement.y - currentDisplacement
+        val velocity = computeVelocity(deltaY, motionEvent.eventTime)
+        currentDisplacement = displacement.y
+        if (velocity.absoluteValue > minVelocity &&
+            displacement.y.absoluteValue > minVerticalDistance) {
             triggered = true
             if (velocity < 0) {
                 gestureController.onSwipeUp()
@@ -128,6 +149,5 @@ class VerticalSwipeTouchController(
 
     companion object {
         private const val SCROLL_VELOCITY_DAMPENING_RC = 1000f / (2f * Math.PI.toFloat() * 10f)
-        private const val TRIGGER_VELOCITY = 2.25f
     }
 }
