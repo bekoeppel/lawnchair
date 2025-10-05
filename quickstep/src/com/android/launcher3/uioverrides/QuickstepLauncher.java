@@ -490,7 +490,7 @@ public class QuickstepLauncher extends Launcher {
             case HINT_STATE_ORDINAL: {
                 Workspace<?> workspace = getWorkspace();
                 getStateManager().goToState(NORMAL);
-                if (workspace.getNextPage() != Workspace.DEFAULT_PAGE) {
+                if (workspace.getNextPage() != workspace.getDefaultPageIndex()) {
                     workspace.post(workspace::moveToDefaultScreen);
                 }
                 break;

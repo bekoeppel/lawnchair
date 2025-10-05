@@ -80,9 +80,7 @@ public class QuickstepAtomicAnimationFactory extends
     private static final float RECENTS_PREPARE_SCALE = 1.33f;
     // Scale workspace takes before animating in
     private static final float WORKSPACE_PREPARE_SCALE = 0.92f;
-    // Constants to specify how to scroll RecentsView to the default page if it's
-    // not already there.
-    private static final int DEFAULT_PAGE = 0;
+    // Default page index for RecentsView is taken from workspace preference.
     private static final int PER_PAGE_SCROLL_DURATION = 150;
     private static final int MAX_PAGE_SCROLL_DURATION = 750;
 
@@ -130,8 +128,9 @@ public class QuickstepAtomicAnimationFactory extends
                                 : clampToProgress(FAST_OUT_SLOW_IN, 0, 0.75f));
                 config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, FINAL_FRAME);
 
-                // Scroll RecentsView to page 0 as it goes offscreen, if necessary.
-                int numPagesToScroll = overview.getNextPage() - DEFAULT_PAGE;
+                // Scroll RecentsView to the default page as it goes offscreen, if necessary.
+                int defaultPage = mActivity.getWorkspace().getDefaultPageIndex();
+                int numPagesToScroll = overview.getNextPage() - defaultPage;
                 long scrollDuration = Math.min(MAX_PAGE_SCROLL_DURATION,
                         numPagesToScroll * PER_PAGE_SCROLL_DURATION);
                 config.duration = Math.max(config.duration, scrollDuration);
@@ -142,7 +141,7 @@ public class QuickstepAtomicAnimationFactory extends
                         && mActivity.getDeviceProfile().isTaskbarPresent) {
                     config.duration = Math.min(config.duration, TASKBAR_TO_HOME_DURATION);
                 }
-                overview.snapToPage(DEFAULT_PAGE, Math.toIntExact(config.duration));
+                overview.snapToPage(defaultPage, Math.toIntExact(config.duration));
             } else {
                 config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCELERATE_DECELERATE);
                 config.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCELERATE, 0, 0.9f));

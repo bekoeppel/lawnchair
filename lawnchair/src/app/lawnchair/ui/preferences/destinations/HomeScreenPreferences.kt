@@ -116,6 +116,17 @@ fun HomeScreenPreferences(
                 destination = HomeScreenRoutes.GRID,
                 subtitle = stringResource(id = R.string.x_by_y, columns, rows),
             )
+            SliderPreference(
+                label = stringResource(id = R.string.home_screen_default_page),
+                adapter = rememberTransformAdapter(
+                    adapter = prefs2.defaultHomePage.getAdapter(),
+                    transformGet = { it + 1 },
+                    transformSet = { it - 1 },
+                ),
+                valueRange = 1..10,
+                step = 1,
+                description = stringResource(id = R.string.home_screen_default_page_description),
+            )
             DividerColumn {
                 SwitchPreference(
                     adapter = lockHomeScreenAdapter,

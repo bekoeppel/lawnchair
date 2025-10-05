@@ -266,6 +266,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val defaultHomePage = preference(
+        key = intPreferencesKey(name = "default_home_page"),
+        defaultValue = resourceProvider.getInt(R.dimen.config_default_home_page),
+        onSet = { reloadHelper.recreate() },
+    )
+
     val hideAppDrawerSearchBar = preference(
         key = booleanPreferencesKey(name = "hide_app_drawer_search_bar"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_hide_app_drawer_search_bar),

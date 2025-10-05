@@ -126,6 +126,8 @@
     <bool name="config_default_enable_material_u_popup">true</bool>
     <bool name="config_default_enable_two_line_allapps">true</bool>
 
+    <item name="config_default_home_page" type="dimen" format="integer">0</item>
+
     <item name="config_default_home_icon_size_factor" type="dimen" format="float">1.0</item>
     <item name="config_default_folder_preview_background_opacity" type="dimen" format="float">1.0</item>
     <item name="config_default_folder_background_opacity" type="dimen" format="float">1.0</item>
